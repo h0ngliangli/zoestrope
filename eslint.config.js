@@ -19,5 +19,17 @@ export default [
     rules: {
       'vue/multi-word-component-names': 'off',
     },
+  },
+
+  {
+    name: 'node',
+    files: ['**/*.js'],
+    env: {
+      node: true,
+    },
+    rules: {
+      'no-console': 'off',
+      'no-process-exit': 'off',
+    },
   }
 ]
