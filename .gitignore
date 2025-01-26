@@ -22,3 +22,4 @@ pnpm-debug.log*
 *.sln
 *.sw?
 api-server/.env
+api-server/firebase-admin-private-key.json
