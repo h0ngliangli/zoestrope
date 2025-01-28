@@ -1,5 +1,6 @@
+import logger from './logger.js'
 const firebaseAdminKeyFile = process.env.FIREBASE_ADMIN_KEY_FILE
-console.log(`firebaseAdminKeyFile: ${firebaseAdminKeyFile}`)
+logger.debug(`firebaseAdminKeyFile: ${firebaseAdminKeyFile}`)
 
 import fs from "fs"
 import { initializeApp, cert } from "firebase-admin/app"
@@ -12,20 +13,26 @@ const firebaseApp = initializeApp({
 const db = getFirestore(firebaseApp)
 const flashcardCol = db.collection("flashcards")
 function saveFlashcard(flashcard) {
-  console.log("saveFlashcard: ", flashcard)
+  logger.debug("saveFlashcard: ", flashcard)
   // TODO
 }
 
 async function getFlashcardById(id) {
-  console.log("getFlashcardById: ", id)
+  logger.debug("getFlashcardById: ", id)
   const flashcard = await flashcardCol.doc(id).get()
   if (!flashcard.exists) {
-    console.log("No such document!")
+    logger.debug("No such document!")
     return
   }
-  console.log("flashcard: ", flashcard.data())
+  logger.debug("flashcard: ", flashcard.data())
   return flashcard.data()
 }
+
+async function search(kw="", tag="") {
+    logger.debug("search ")
+}
+
+
 export default {
   saveFlashcard,
   getFlashcardById,
