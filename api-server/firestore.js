@@ -1,10 +1,10 @@
-import logger from './logger.js'
+import logger from "./logger.js"
 const firebaseAdminKeyFile = process.env.FIREBASE_ADMIN_KEY_FILE
 logger.debug(`firebaseAdminKeyFile: ${firebaseAdminKeyFile}`)
 
 import fs from "fs"
 import { initializeApp, cert } from "firebase-admin/app"
-import { getFirestore } from "firebase-admin/firestore"
+import { Filter, getFirestore } from "firebase-admin/firestore"
 const serviceAccount = JSON.parse(fs.readFileSync(firebaseAdminKeyFile))
 const firebaseApp = initializeApp({
   credential: cert(serviceAccount),
@@ -28,12 +28,45 @@ async function getFlashcardById(id) {
   return flashcard.data()
 }
 
-async function search(kw="", tag="") {
-    logger.debug("search ")
+async function searchFlashcards(kw = "", tag = "") {
+  logger.debug("search flashcards: %o", { kw, tag })
+  let query = flashcardCol
+  if (kw) {
+    query = query.where(
+      Filter.or(
+        Filter.and(
+          Filter.where("title", ">=", kw),
+          Filter.where("title", "<=", kw + "\uf8ff")
+        ),
+        Filter.and(
+          Filter.where("content", ">=", kw),
+          Filter.where("content", "<=", kw + "\uf8ff")
+        )
+      )
+    )
+  }
+  if (tag) {
+    query = query.where("tags", "array-contains", tag)
+  }
+  const snapshot = await query.get()
+  const flashcards = []
+  snapshot.forEach((doc)=>{
+    flashcards.push(doc.data())
+  })
+  logger.debug("flashcards: ", flashcards)
+  return flashcards
 }
 
+async function createFlashcard(flashcard) {
+  logger.debug("createFlashcard: ", flashcard)
+  const docRef = await flashcardCol.add(flashcard)
+  logger.debug("docRef: ", docRef)
+  return docRef.id
+}
 
 export default {
   saveFlashcard,
   getFlashcardById,
+  searchFlashcards,
+  createFlashcard,
 }

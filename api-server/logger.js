@@ -1,6 +1,7 @@
 import pino from "pino"
+import pinoCaller from "pino-caller"
 
-const logger = pino({
+let logger = pino({
   level: "debug",
   transport: {
     target: "pino-pretty",
@@ -9,6 +10,9 @@ const logger = pino({
       ignore: "pid,hostname",
     },
   },
+})
+logger = pinoCaller(logger, {
+  relativeTo: import.meta.dirname,
 })
 
 logger.info("Logger initialized")
