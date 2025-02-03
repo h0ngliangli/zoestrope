@@ -1,12 +1,14 @@
 // Web API for flashcard related operations
-import db from "./db.js"
 import create_logger from "./logger.js"
+import db from "./db.js"
+import express from "express"
 import model_flashcard from "./model_flashcard.js"
 
 const logger = create_logger("api", "blue")
+const router = express.Router()
 
 // get flashcard by req.query.id
-async function flashcard_get(req, res) {
+router.get("/get", async (req, res) => {
   logger.info(`${req.method} ${req.url}`)
   // get id from req.query
   const id = req.query.id
@@ -25,10 +27,10 @@ async function flashcard_get(req, res) {
   }
   logger.info("response: %o", flashcard)
   res.send(flashcard)
-}
+})
 
 // search flashcards by req.query.kw and req.query.tag
-async function flashcard_search(req, res) {
+router.get("/search", async (req, res) => {
   logger.info(`${req.method} ${req.url}`)
   const kw = req.query.kw
   const tag = req.query.tag
@@ -40,20 +42,20 @@ async function flashcard_search(req, res) {
   const flashcards = await db.searchFlashcards(kw, tag)
   logger.info("response: %o", flashcards)
   res.send(flashcards)
-}
+})
 
 // create a new flashcard
-async function flashcard_create(req, res) {
+router.post("/create", async (req, res) => {
   logger.info(`${req.method} ${req.url}`)
   const flashcard = model_flashcard.toFlashcard(req.body)
   logger.info("request body: %o", flashcard)
   const id = await db.db_insert_doc("flashcard", flashcard)
   logger.info("response: %o", { id })
   res.send({ id })
-}
+})
 
 // delete a flashcard by req.query.id
-async function flashcard_delete(req, res) {
+router.post("/delete", async (req, res) => {
   logger.info(`${req.method} ${req.url}`)
   const id = req.query.id
   if (!id) {
@@ -63,16 +65,16 @@ async function flashcard_delete(req, res) {
   }
   try {
     await db.deleteFlashcardById(id)
-    const response = { message: `flashcard deleted by id ${id}` } 
+    const response = { message: `flashcard deleted by id ${id}` }
     res.send(response)
   } catch (error) {
     logger.error(error)
     res.status(500).json({ message: error.message })
   }
-}
+})
 
 // update a flashcard by req.body
-async function flashcard_update(req, res) {
+router.post("/update", async (req, res) => {
   logger.info(`${req.method} ${req.url}`)
   const patch = req.body
   logger.info("request body: %o", patch)
@@ -83,19 +85,12 @@ async function flashcard_update(req, res) {
     logger.error(error)
     res.status(500).json({ message: error.message })
   }
-}
+})
 
 // attach an image to a flashcard
-async function flashcard_attach_img(req, res) {
+router.post("/attach-img", async (req, res) => {
   logger.info(`${req.method} ${req.url}`)
   res.status(501).json({ message: "not implemented" })
-}
+})
 
-export default {
-  flashcard_get,
-  flashcard_search,
-  flashcard_create,
-  flashcard_delete,
-  flashcard_update,
-  flashcard_attach_img,
-}
+export default router
