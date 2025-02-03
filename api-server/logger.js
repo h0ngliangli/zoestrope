@@ -1,8 +1,7 @@
 import pino from "pino"
-import { white } from "colorette"
 import pino_pretty from "pino-pretty"
 
-function create_logger(msgPrefix = "", colorette_func = white) {
+function create_logger(msgPrefix = "", color = "white") {
   const logger = pino(
     {
       msgPrefix: msgPrefix ? `[${msgPrefix}] ` : "",
@@ -12,7 +11,7 @@ function create_logger(msgPrefix = "", colorette_func = white) {
       colorize: true,
       ignore: "hostname,pid",
       messageFormat: (log, messageKey, levelLabel, { colors }) => {
-        return `\n\t${colorette_func(log[messageKey])}`
+        return `\n\t${colors[color](log[messageKey])}`
       },
     })
   )

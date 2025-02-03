@@ -1,8 +1,7 @@
 import env from "./env.js"
 import create_logger from "./logger.js"
-import { yellow } from "colorette"
 
-const logger = create_logger("db", yellow)
+const logger = create_logger("db", "yellow")
 
 logger.info("Database implementation: %s", env.db_impl)
 const impl = await import(env.db_impl)

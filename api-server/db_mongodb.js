@@ -1,9 +1,8 @@
 import { MongoClient, ServerApiVersion } from "mongodb"
 import env from "./env.js"
 import create_logger from "./logger.js"
-import { yellow } from "colorette"
 
-const logger = create_logger("db_mongodb", yellow)
+const logger = create_logger("db_mongodb", "yellow")
 const mongoClient = new MongoClient(
   env.mongodb.url,
   {

@@ -2,9 +2,8 @@
 import db from "./db.js"
 import create_logger from "./logger.js"
 import model_flashcard from "./model_flashcard.js"
-import {blue} from "colorette"
 
-const logger = create_logger("api", blue)
+const logger = create_logger("api", "blue")
 
 // get flashcard by req.query.id
 async function flashcard_get(req, res) {

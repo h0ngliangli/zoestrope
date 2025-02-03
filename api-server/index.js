@@ -5,9 +5,8 @@ import create_logger from './logger.js'
 import env from "./env.js"
 import express from "express"
 import flashcard from "./api.js"
-import { blue } from "colorette"
 
-const logger = create_logger("api-server", blue)
+const logger = create_logger("api-server", "blue")
 const webapp = express()
 webapp.use(cors()) // enable Cross Origin Resource Sharing and allow all origins
 webapp.use(express.json()) // enable JSON body parsing
