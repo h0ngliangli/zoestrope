@@ -7,4 +7,5 @@ logger.info("database implementation is %s", env.db_impl)
 const impl = await import(env.db_impl)
 export default {
   db_insert_flashcard: impl.db_insert_flashcard,
+  db_get_flashcard: impl.db_get_flashcard,
 }

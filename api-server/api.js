@@ -12,6 +12,7 @@ router.get("/get", async (req, res) => {
   logger.info(`${req.method} ${req.url}`)
   // get id from req.query
   const id = req.query.id
+  logger.debug("id: %s", id)
   // check if id is provided
   if (!id) {
     logger.warn("id is required")
@@ -19,7 +20,7 @@ router.get("/get", async (req, res) => {
     return
   }
   // get flashcard by id
-  const flashcard = await db.getFlashcardById(id)
+  const flashcard = await db.db_get_flashcard(id)
   if (!flashcard) {
     logger.warn("flashcard not found")
     res.status(400).json({ message: `flashcard not found by id ${id}` })
@@ -49,7 +50,6 @@ router.post("/create", async (req, res) => {
   logger.info("%s %s %o", req.method, req.url, req.body)
   const flashcard = model_flashcard.to_flashcard(req.body)
   logger.info("flashcard to save is %o", flashcard)
-  logger.debug("%o", db.db_insert_flashcard)
   console.log("db.db_insert_flashcard", db.db_insert_flashcard)
   const id = await db.db_insert_flashcard(flashcard)
   const res_body = { id }

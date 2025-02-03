@@ -12,6 +12,8 @@ Content-Type: application/json
 }
 
 ###
+GET http://localhost:3000/flashcard/get?id=67a10d218f33fc1ce1d5e414
+###
 GET http://localhost:3000/flashcard/search
 
 ###
