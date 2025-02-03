@@ -21,3 +21,5 @@ pnpm-debug.log*
 *.sln
 *.sw?
 api-server/firebase-admin-private-key.json
+api-server/key_firebase.json
+api-server/key_mongodb.pem

@@ -1,23 +1,35 @@
-import express from "express"
+// entry point of the api-server
+
 import cors from "cors"
-import "dotenv/config"
-import flashcard from "./flashcard.js"
-import logger from './logger.js'
+import create_logger from './logger.js'
+import env from "./env.js"
+import express from "express"
+import flashcard from "./api.js"
+import { blue } from "colorette"
 
-const app = express()
-app.use(cors())
-app.use(express.json())
+const logger = create_logger("api-server", blue)
+const webapp = express()
+webapp.use(cors()) // enable Cross Origin Resource Sharing and allow all origins
+webapp.use(express.json()) // enable JSON body parsing
 
-app.get("/", (req, res) => {
+
+webapp.get("/", (req, res) => {
   res.send("api-server is running.")
 })
 
-app.get("/flashcard/get", flashcard.getById)
+// ------------- routes ------------
+// get flashcard by id
+webapp.get("/flashcard/get", flashcard.flashcard_get)
+// search flashcards by keyword and tag
+webapp.get("/flashcard/search", flashcard.flashcard_search)
+// create a new flashcard
+webapp.post("/flashcard/create", flashcard.flashcard_create)
+// delete a flashcard by id
+webapp.delete("/flashcard/delete", flashcard.flashcard_delete)
+// update a flashcard by id
+webapp.put("/flashcard/update", flashcard.flashcard_update)
 
-app.get("/flashcard/search", flashcard.search)
-
-app.post("/flashcard/create", flashcard.create)
-
-app.listen(process.env.PORT, () => {
-  logger.info(`api-server is running on port ${process.env.PORT}`)
+// start the server
+webapp.listen(env.port, () => {
+  logger.info(`api-server is running on port ${env.port}`)
 })

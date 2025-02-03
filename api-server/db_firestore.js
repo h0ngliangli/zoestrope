@@ -1,21 +1,18 @@
-import logger from "./logger.js"
-const firebaseAdminKeyFile = process.env.FIREBASE_ADMIN_KEY_FILE
-logger.debug(`firebaseAdminKeyFile: ${firebaseAdminKeyFile}`)
-
+// Firestore implementation
+import create_logger from "./logger.js"
+import env from "./env.js"
 import fs from "fs"
 import { initializeApp, cert } from "firebase-admin/app"
 import { Filter, getFirestore } from "firebase-admin/firestore"
-const serviceAccount = JSON.parse(fs.readFileSync(firebaseAdminKeyFile))
+
+const logger = create_logger("db_firestore")
+const key = JSON.parse(fs.readFileSync(env.firestore.key_file))
 const firebaseApp = initializeApp({
-  credential: cert(serviceAccount),
+  credential: cert(key),
 })
 
 const db = getFirestore(firebaseApp)
 const flashcardCol = db.collection("flashcards")
-function saveFlashcard(flashcard) {
-  logger.debug("saveFlashcard: ", flashcard)
-  // TODO
-}
 
 async function getFlashcardById(id) {
   logger.debug("getFlashcardById: ", id)
@@ -35,12 +32,16 @@ async function searchFlashcards(kw = "", tag = "") {
     query = query.where(
       Filter.or(
         Filter.and(
-          Filter.where("title", ">=", kw),
-          Filter.where("title", "<=", kw + "\uf8ff")
+          Filter.where("question", ">=", kw),
+          Filter.where("question", "<=", kw + "\uf8ff")
         ),
         Filter.and(
-          Filter.where("content", ">=", kw),
-          Filter.where("content", "<=", kw + "\uf8ff")
+          Filter.where("answer", ">=", kw),
+          Filter.where("answer", "<=", kw + "\uf8ff")
+        ),
+        Filter.and(
+          Filter.where("note", ">=", kw),
+          Filter.where("note", "<=", kw + "\uf8ff")
         )
       )
     )
@@ -53,19 +54,19 @@ async function searchFlashcards(kw = "", tag = "") {
   snapshot.forEach((doc)=>{
     flashcards.push(doc.data())
   })
-  logger.debug("flashcards: ", flashcards)
+  logger.debug("flashcards: %o", flashcards)
   return flashcards
 }
 
 async function createFlashcard(flashcard) {
-  logger.debug("createFlashcard: ", flashcard)
-  const docRef = await flashcardCol.add(flashcard)
-  logger.debug("docRef: ", docRef)
+  logger.debug("call createFlashcard %o", flashcard)
+  const data = { question, answer, note, tags } = flashcard
+  const docRef = await flashcardCol.add(data)
+  logger.debug("docRef: %o", docRef)
   return docRef.id
 }
 
 export default {
-  saveFlashcard,
   getFlashcardById,
   searchFlashcards,
   createFlashcard,

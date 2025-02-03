@@ -1,20 +1,23 @@
 import pino from "pino"
-import pinoCaller from "pino-caller"
+import { white } from "colorette"
+import pino_pretty from "pino-pretty"
 
-let logger = pino({
-  level: "debug",
-  transport: {
-    target: "pino-pretty",
-    options: {
-      colorize: true,
-      ignore: "pid,hostname",
+function create_logger(msgPrefix = "", colorette_func = white) {
+  const logger = pino(
+    {
+      msgPrefix: msgPrefix ? `[${msgPrefix}] ` : "",
+      level: "debug",
     },
-  },
-})
-logger = pinoCaller(logger, {
-  relativeTo: import.meta.dirname,
-})
+    pino_pretty({
+      colorize: true,
+      ignore: "hostname,pid",
+      messageFormat: (log, messageKey, levelLabel, { colors }) => {
+        return `\n\t${colorette_func(log[messageKey])}`
+      },
+    })
+  )
+  logger.info("logger initialized")
+  return logger
+}
 
-logger.info("Logger initialized")
-
-export default logger
+export default create_logger
