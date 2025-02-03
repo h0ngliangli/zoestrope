@@ -48,7 +48,7 @@ router.get("/search", async (req, res) => {
 // create a new flashcard
 router.post("/create", async (req, res) => {
   logger.info("%s %s %o", req.method, req.url, req.body)
-  const flashcard = model_flashcard.to_flashcard(req.body)
+  const flashcard = model_flashcard.for_create(req.body)
   logger.info("flashcard to save is %o", flashcard)
   console.log("db.db_insert_flashcard", db.db_insert_flashcard)
   const id = await db.db_insert_flashcard(flashcard)
@@ -84,12 +84,19 @@ router.all("/delete", async (req, res) => {
 
 // update a flashcard by req.body
 router.post("/update", async (req, res) => {
-  logger.info(`${req.method} ${req.url}`)
-  const patch = req.body
-  logger.info("request body: %o", patch)
+  logger.info(`${req.method} ${req.url} %o`, req.body)
+  const patch = model_flashcard.for_update(req.body)
+  logger.info("update patch is %o", patch)
   try {
-    await db.updateFlashcard(patch)
-    const response = { message: "flashcard updated" }
+    const modified_count = await db.db_update_flashcard(patch)
+    if (modified_count === 0) {
+      logger.warn(`flashcard not found by id ${patch.id}`)
+      res.status(400).json({ message: `flashcard not found by id ${patch.id}` })
+      return
+    }
+    const res_body = { message: "flashcard updated" }
+    logger.info(`${req.url} => %o`, res_body)
+    res.send(res_body)
   } catch (error) {
     logger.error(error)
     res.status(500).json({ message: error.message })
