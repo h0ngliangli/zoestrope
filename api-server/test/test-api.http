@@ -26,11 +26,19 @@ Content-Type: application/json
 }
 ###
 
+# search without query
+# expected 400
 GET http://localhost:3000/flashcard/search
 
 ###
-GET http://localhost:3000/flashcard/search?kw=.env
+# search with kw
+GET http://localhost:3000/flashcard/search?kw=Beijing
 
 
 ###
-GET http://localhost:3000/flashcard/search?kw=vue&tag=vue
+# search with tag
+GET http://localhost:3000/flashcard/search?tag=capital
+
+###
+# search with tag and kw
+GET http://localhost:3000/flashcard/search?kw=Paris&tag=capital

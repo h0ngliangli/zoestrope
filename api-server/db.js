@@ -10,5 +10,6 @@ export default {
   db_get_flashcard: impl.db_get_flashcard,
   db_delete_flashcard: impl.db_delete_flashcard,
   db_update_flashcard: impl.db_update_flashcard,
+  db_search_flashcard: impl.db_search_flashcard,
   db_close: impl.db_close,
 }

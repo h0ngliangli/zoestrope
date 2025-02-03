@@ -52,7 +52,13 @@ async function db_update_doc(col_name, doc) {
     )
   logger.info("db_update_doc => %o", result)
   return result.modifiedCount
-  
+}
+
+async function db_search_doc(col_name, query) {
+  logger.info("db_search_doc(%s, %o)", col_name, query)
+  const result = await database.collection(col_name).find(query).toArray()
+  logger.info("db_search_doc => %o", result)
+  return result
 }
 
 export async function db_insert_flashcard(flashcard) {
@@ -71,6 +77,24 @@ export async function db_update_flashcard(flashcard) {
   return await db_update_doc("flashcard", flashcard)
 }
 
+export async function db_search_flashcard(kw, tag) {
+  let query = {}
+  if (kw) {
+    query = {
+      $or: [
+        { question: { $regex: kw, $options: "i" } },
+        { answer: { $regex: kw, $options: "i" } },
+        { note: { $regex: kw, $options: "i" } },
+      ],
+    }
+  }
+  if (tag) {
+    query.tags = tag
+  }
+
+  return await db_search_doc("flashcard", query)
+}
+
 
 export async function db_close() {
   logger.info("db_close")
@@ -81,6 +105,7 @@ export async function db_close() {
 export default {
   db_insert_flashcard,
   db_get_flashcard,
+  db_search_flashcard,
   // getFlashcardById,
   // searchFlashcards,
   // createFlashcard,

@@ -40,8 +40,8 @@ router.get("/search", async (req, res) => {
     res.status(400).json({ message: "kw or tag is required" })
     return
   }
-  const flashcards = await db.searchFlashcards(kw, tag)
-  logger.info("response: %o", flashcards)
+  const flashcards = await db.db_search_flashcard(kw, tag)
+  logger.info("%s => %o", req.url, flashcards)
   res.send(flashcards)
 })
 
