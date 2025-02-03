@@ -46,12 +46,15 @@ router.get("/search", async (req, res) => {
 
 // create a new flashcard
 router.post("/create", async (req, res) => {
-  logger.info(`${req.method} ${req.url}`)
-  const flashcard = model_flashcard.toFlashcard(req.body)
-  logger.info("request body: %o", flashcard)
-  const id = await db.db_insert_doc("flashcard", flashcard)
-  logger.info("response: %o", { id })
-  res.send({ id })
+  logger.info("%s %s %o", req.method, req.url, req.body)
+  const flashcard = model_flashcard.to_flashcard(req.body)
+  logger.info("flashcard to save is %o", flashcard)
+  logger.debug("%o", db.db_insert_flashcard)
+  console.log("db.db_insert_flashcard", db.db_insert_flashcard)
+  const id = await db.db_insert_flashcard(flashcard)
+  const res_body = { id }
+  logger.info("%s => %o", req.url, res_body)
+  res.send(res_body)
 })
 
 // delete a flashcard by req.query.id

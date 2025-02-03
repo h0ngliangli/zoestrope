@@ -1,4 +1,4 @@
-function toFlashcard(obj) {
+function to_flashcard(obj) {
   return {
     qeustion: obj.question ? obj.question : "",
     answer: obj.answer ? obj.answer : "",
@@ -9,5 +9,5 @@ function toFlashcard(obj) {
 }
 
 export default {
-  toFlashcard,
+  to_flashcard,
 }
