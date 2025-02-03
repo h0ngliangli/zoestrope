@@ -13,7 +13,6 @@ await mongoClient.db("admin").command({ ping: 1 })
 logger.info("mongodb is connected")
 
 const database = mongoClient.db(env.mongodb.db)
-const flashcardsCol = database.collection("flashcard")
 
 // insert a new document and return the inserted id
 async function db_insert_doc(col_name, doc) {
@@ -39,6 +38,12 @@ export async function db_insert_flashcard(flashcard) {
 export async function db_get_flashcard(id) {
   return await db_get_doc("flashcard", id)
 }
+
+export async function db_close() {
+  logger.info("db_close")
+  await mongoClient.close()
+}
+
 
 export default {
   db_insert_flashcard,

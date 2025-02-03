@@ -1,10 +1,11 @@
 // entry point of the api-server
 
+import api from "./api.js"
 import cors from "cors"
 import create_logger from './logger.js'
+import db from "./db.js"
 import env from "./env.js"
 import express from "express"
-import api from "./api.js"
 
 const logger = create_logger("api-server", "blue")
 const webapp = express()
@@ -22,4 +23,11 @@ webapp.use("/flashcard", api)
 // start the server
 webapp.listen(env.port, () => {
   logger.info(`api-server is running on port ${env.port}`)
+})
+
+// close the server when SIGINT
+process.on("SIGINT", () => {
+  logger.info("api-server is shutting down")
+  db.db_close()
+  process.exit(0)
 })
