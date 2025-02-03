@@ -58,7 +58,7 @@ router.post("/create", async (req, res) => {
 })
 
 // delete a flashcard by req.query.id
-router.post("/delete", async (req, res) => {
+router.all("/delete", async (req, res) => {
   logger.info(`${req.method} ${req.url}`)
   const id = req.query.id
   if (!id) {
@@ -67,9 +67,15 @@ router.post("/delete", async (req, res) => {
     return
   }
   try {
-    await db.deleteFlashcardById(id)
-    const response = { message: `flashcard deleted by id ${id}` }
-    res.send(response)
+    const deletedCount = await db.db_delete_flashcard(id)
+    if (deletedCount === 0) {
+      logger.warn(`flashcard not found by id ${id}`)
+      res.status(400).json({ message: `flashcard not found by id ${id}` })
+      return
+    }
+    const res_body = { message: `flashcard deleted by id ${id}` }
+    logger.info(`${req.url} => %o`, res_body)
+    res.send(res_body)
   } catch (error) {
     logger.error(error)
     res.status(500).json({ message: error.message })

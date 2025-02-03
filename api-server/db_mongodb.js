@@ -31,12 +31,25 @@ async function db_get_doc(col_name, id) {
   return result
 }
 
+async function db_delete_doc(col_name, id) {
+  logger.info("db_delete_doc(%s, %s)", col_name, id)
+  const result = await database
+    .collection(col_name)
+    .deleteOne({ _id: ObjectId.createFromHexString(id) })
+  logger.info("db_delete_doc => %o", result)
+  return result.deletedCount
+}
+
 export async function db_insert_flashcard(flashcard) {
   return await db_insert_doc("flashcard", flashcard)
 }
 
 export async function db_get_flashcard(id) {
   return await db_get_doc("flashcard", id)
+}
+
+export async function db_delete_flashcard(id) {
+  return await db_delete_doc("flashcard", id)
 }
 
 export async function db_close() {

@@ -10,10 +10,12 @@ Content-Type: application/json
     "answer": "Paris",
     "tags": ["geography", "capital"]
 }
+###
+GET http://localhost:3000/flashcard/get?id=67a11e06dd3bee2dbc6c2a26
+###
+DELETE http://localhost:3000/flashcard/delete?id=67a11e06dd3bee2dbc6c2a26
+### 
 
-###
-GET http://localhost:3000/flashcard/get?id=67a10d218f33fc1ce1d5e414
-###
 GET http://localhost:3000/flashcard/search
 
 ###
