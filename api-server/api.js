@@ -2,10 +2,19 @@
 import create_logger from "./logger.js"
 import db from "./dbs.js"
 import express from "express"
+import fs from "fs/promises"
 import model_flashcard from "./model_flashcard.js"
 
 const logger = create_logger("api", "blue")
 const router = express.Router()
+
+// create ./tmp folder if not exists
+fs.mkdir("./tmp", { recursive: true }).then(() => {
+  logger.info("tmp folder is created")
+}).catch((error) => {
+  logger.error(error)
+  process.exit(1)
+})
 
 // get flashcard by req.query.id
 router.get("/get", async (req, res) => {
@@ -106,6 +115,11 @@ router.post("/update", async (req, res) => {
 // attach an image to a flashcard
 router.post("/attach-img", async (req, res) => {
   logger.info(`${req.method} ${req.url}`)
+  // use multer to get FormData from req
+  // FormData: { id: string, img: file }
+  // unique filename for img
+  // save img to storage
+  // update flashcard with img url
   res.status(501).json({ message: "not implemented" })
 })
 
