@@ -12,6 +12,6 @@ export default {
   },
   gc_storage: {
     key_file: "key_gc_storage.json",
-    bucket: "zoetrope-3372",
+    bucket: "bucket-zoetrope-3372",
   },
 }

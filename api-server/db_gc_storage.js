@@ -14,8 +14,8 @@ if (!bucket.exists()) {
 logger.info("google cloud storage is connected")
 
 // upload a file to google cloud storage
-async function db_upload(file_path) {
-  logger.info("db_upload(%s, %s)", file_path)
+export async function db_upload(file_path) {
+  logger.info("db_upload(%s)", file_path)
   const [file] = await bucket.upload(file_path)
   const public_url = file.publicUrl()
   logger.info("db_upload => %s", public_url)

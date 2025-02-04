@@ -100,13 +100,3 @@ export async function db_close() {
   logger.info("db_close")
   await mongoClient.close()
 }
-
-
-export default {
-  db_insert_flashcard,
-  db_get_flashcard,
-  db_search_flashcard,
-  // getFlashcardById,
-  // searchFlashcards,
-  // createFlashcard,
-}

@@ -4,17 +4,24 @@ import db from "./dbs.js"
 import express from "express"
 import fs from "fs/promises"
 import model_flashcard from "./model_flashcard.js"
+import multer from "multer"
+import dbs from "./dbs.js"
 
 const logger = create_logger("api", "blue")
 const router = express.Router()
 
 // create ./tmp folder if not exists
-fs.mkdir("./tmp", { recursive: true }).then(() => {
-  logger.info("tmp folder is created")
-}).catch((error) => {
-  logger.error(error)
-  process.exit(1)
-})
+fs.mkdir("./tmp", { recursive: true })
+  .then(() => {
+    logger.info("tmp folder is created")
+  })
+  .catch((error) => {
+    logger.error(error)
+    process.exit(1)
+  })
+
+// multer storage for img upload
+const upload_placer = multer({ dest: "./tmp" })
 
 // get flashcard by req.query.id
 router.get("/get", async (req, res) => {
@@ -113,14 +120,78 @@ router.post("/update", async (req, res) => {
 })
 
 // attach an image to a flashcard
-router.post("/attach-img", async (req, res) => {
-  logger.info(`${req.method} ${req.url}`)
-  // use multer to get FormData from req
+router.post("/attach-img", upload_placer.single("img"), async (req, res) => {
   // FormData: { id: string, img: file }
-  // unique filename for img
+  logger.info(`${req.method} ${req.url}`)
+  logger.info("req.file: %o", req.file)
+  logger.info("id: %o", req.body.id)
+  // delete img file in case of error
+  req.on("close", async () => {
+    if (req.file) {
+      try {
+        logger.info("delete tmp img file %s", req.file.path)
+        await fs.unlink(req.file.path)
+      } catch (error) {
+        logger.error(error)
+      }
+    }
+  })
+  // check if img is provided
+  if (!req.file) {
+    logger.warn("img is required")
+    res.status(400).json({ message: "img is required" })
+    return
+  }
+  if (!req.body.id) {
+    logger.warn("id is required")
+    res.status(400).json({ message: "id is required" })
+    return
+  }
+  if (!req.file.mimetype.startsWith("image/")) {
+    logger.warn("unrecognizable file type %s", req.file.mimetype)
+    res
+      .status(400)
+      .json({ message: `unrecognizable image file type ${req.file.mimetype}` })
+    return
+  }
+  // check if file exists
+  try {
+    await fs.access(req.file.path)
+  } catch (error) {
+    logger.warn("img file not found")
+    logger.debug("req.file.path: %s", req.file.path)
+    res.status(500).json({ message: "img file not found" })
+    return
+  }
+  // check if id is valid
+  const flashcard = await dbs.db_get_flashcard(req.body.id)
+  if (!flashcard) {
+    logger.warn("flashcard not found by id %s", req.body.id)
+    res
+      .status(400)
+      .json({ message: `flashcard not found by id ${req.body.id}` })
+    return
+  }
+  // add extension to img file
+  const img_ext = req.file.originalname.split(".").pop().toLowerCase()
+  const valid_exts = ["jpg", "jpeg", "png", "gif", "webp"]
+  if (!valid_exts.includes(img_ext)) {
+    logger.warn("unrecognizable file extension %s", img_ext)
+    res.status(400).json({ message: `unrecognizable image file extension ${img_ext}` })
+    return
+  }
+  const img_path = `${req.file.path}.${img_ext}`
+  logger.info("update img file to %s", img_path)
+  await fs.rename(req.file.path, img_path)
+  req.file.path = img_path
   // save img to storage
-  // update flashcard with img url
-  res.status(501).json({ message: "not implemented" })
+  const img_url = await dbs.db_upload(img_path)
+  await dbs.db_update_flashcard({ id: req.body.id, img_url: img_url })
+  // remove tmp img file
+  await fs.unlink(img_path)
+  const res_body = { message: "img attached" }
+  logger.info("%s => %o", req.url, res_body)
+  res.send(res_body)
 })
 
 export default router
