@@ -1,10 +1,7 @@
 export default {
   port: 3000,
   db_impl: "./db_mongodb.js",
-  keys_files: {
-    openai: "key_openai.json",
-    firestore_admin: "key_firebase.json",
-  },
+  storage_impl: "./db_gc_storage.js",
   mongodb: {
     url: "mongodb+srv://cluster0.ir6ye.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority&appName=Cluster0",
     db: "zoetrope",
@@ -12,5 +9,9 @@ export default {
   },
   firestore: {
     key_file: "key_firebase.json",
-  }
+  },
+  gc_storage: {
+    key_file: "key_gc_storage.json",
+    bucket: "zoetrope-3372",
+  },
 }

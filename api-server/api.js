@@ -1,6 +1,6 @@
 // Web API for flashcard related operations
 import create_logger from "./logger.js"
-import db from "./db.js"
+import db from "./dbs.js"
 import express from "express"
 import model_flashcard from "./model_flashcard.js"
 

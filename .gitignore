@@ -20,6 +20,6 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-api-server/firebase-admin-private-key.json
 api-server/key_firebase.json
 api-server/key_mongodb.pem
+api-server/key_gc_storage.json
