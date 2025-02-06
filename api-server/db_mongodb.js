@@ -14,6 +14,13 @@ logger.info("mongodb is connected")
 
 const database = mongoClient.db(env.mongodb.db)
 
+
+function _id_to_id(doc) {
+  doc.id = doc._id.toString()
+  delete doc._id
+  return doc  
+}
+
 // insert a new document and return the inserted id
 async function db_insert_doc(col_name, doc) {
   logger.info("db_insert_doc(%s, %o)", col_name, doc)
@@ -27,6 +34,7 @@ async function db_get_doc(col_name, id) {
   const result = await database
     .collection(col_name)
     .findOne({ _id: ObjectId.createFromHexString(id) })
+  _id_to_id(result)
   logger.info("db_get_doc => %o", result)
   return result
 }
@@ -54,6 +62,7 @@ async function db_update_doc(col_name, doc) {
 async function db_search_doc(col_name, query) {
   logger.info("db_search_doc(%s, %o)", col_name, query)
   const result = await database.collection(col_name).find(query).toArray()
+  result.forEach(_id_to_id)
   logger.info("db_search_doc => %o", result)
   return result
 }
@@ -110,7 +119,8 @@ export async function db_fulltext_search_flashcard(kw) {
     },
   ]
   let cursor = await database.collection("flashcard").aggregate(query)
-  const result = await cursor.toArray()
+  const result = (await cursor.toArray())
+  result.forEach(_id_to_id)
   return result
 }
 

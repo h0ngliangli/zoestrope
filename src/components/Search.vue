@@ -24,14 +24,27 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12">
+      <v-col
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+        v-for="flashcard in flashcards"
+        :key="flashcard.id"
+      >
         <v-card
-          v-for="flashcard in flashcards"
-          :key="flashcard.id"
           @click="goToFlashcard(flashcard.id)"
+          class="mx-auto"
+          max-width="300"
+          variant="outlined"
         >
           <v-card-title>{{ flashcard.question }}</v-card-title>
-          <v-card-text>{{ flashcard.answer }}</v-card-text>
+          <v-card-subtitle>
+            <!-- display tags -->
+            <v-chip v-for="tag in flashcard.tags" :key="tag" class="mr-2">
+              {{ tag }}
+            </v-chip>
+          </v-card-subtitle>
         </v-card>
       </v-col>
     </v-row>
@@ -79,4 +92,8 @@ const searchFlashcards = async () => {
 
 const debouncedSearchFlashcards = debounce(searchFlashcards, 300)
 
+const goToFlashcard = (id) => {
+  // console.log(router.getRoutes())
+  router.push({ name: "/flashcard/[id]", params: { id } })
+}
 </script>

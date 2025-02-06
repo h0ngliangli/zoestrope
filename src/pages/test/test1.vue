@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-row justify="center">
+        <v-row>
             <v-col v-for="(card, index) in cards" :key="index"
             cols="12" sm="6" md="4" lg="3" >
                 <v-card max-width="300" >

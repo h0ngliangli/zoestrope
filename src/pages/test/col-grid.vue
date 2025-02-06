@@ -12,7 +12,7 @@
         v-for="(card, index) in cards"
         :key="index"
         cols="12"
-        sm=""
+        sm="6"
         md="4"
         lg="3"
       >
