@@ -6,7 +6,7 @@ const appStore = useAppStore()
 fetch("http://localhost:3000/flashcard/recent")
   .then((res) => res.json())
   .then((data) => {
-    appStore.setFlashcards(data)
+    appStore.setRecentFlashcards(data)
   })
   .catch((err) => console.error(err))
 

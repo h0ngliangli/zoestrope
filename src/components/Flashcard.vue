@@ -26,6 +26,8 @@
     </v-card-text>
     <v-card-actions>
       <v-btn @click="saveFlashcard" color="primary" v-if="toSave">Save</v-btn>
+      <!-- delete btn -->
+      <v-btn color="error" v-if="toDelete" @click="deleteFlashcard">Delete</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -62,9 +64,18 @@ watch(() => flashcard, (newVal, oldVal) => {
   toSave.value = true
 }, { deep: true })
 
+const toDelete = computed(() => {
+  return flashcard.id
+})
+
 function saveFlashcard() {
   console.log("Question:", question.value)
   console.log("Answer:", answer.value)
   // 处理添加 Flashcard 的逻辑
+}
+
+function deleteFlashcard() {
+  console.log("Delete flashcard:", flashcard.id)
+  // 处理删除 Flashcard 的逻辑
 }
 </script>

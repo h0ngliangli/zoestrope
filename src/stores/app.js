@@ -14,5 +14,8 @@ export const useAppStore = defineStore("app", {
     selectFlashcard(flashcard) {
       this.selectedFlashcard = flashcard
     },
+    setRecentFlashcards(flashcards) {
+      this.recentFlashcards = flashcards
+    },
   },
 })

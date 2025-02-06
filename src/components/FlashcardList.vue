@@ -24,6 +24,6 @@ const props = defineProps({
 })
 const appStore = useAppStore()
 const flashcards = computed(() => {
-  return appStore.flashcards
+  return appStore.recentFlashcards
 })
 </script>

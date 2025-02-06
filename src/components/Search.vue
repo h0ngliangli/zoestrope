@@ -6,7 +6,7 @@
         card view with the question and answer of the flashcard displayed.
         Clicking on a flashcard will take the user to the flashcard view page
     -->
-  <v-sheet class="pa-4" style="max-width: 800px">
+  <v-sheet class="pa-4">
     <!--
             class="pa-4" is a Vuetify utility class that applies padding of 4 units
             to all sides of the element.
