@@ -4,6 +4,7 @@
     <v-btn @click="$router.go(-1)">
         <v-icon>mdi-arrow-left</v-icon>
     </v-btn>
+    <Flashcard :flashcard="flashcard" />
    <div>
     <h1>{{ flashcard.question }}</h1>
     <p>{{ flashcard.answer }}</p>

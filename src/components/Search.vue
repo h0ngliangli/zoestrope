@@ -6,7 +6,7 @@
         card view with the question and answer of the flashcard displayed.
         Clicking on a flashcard will take the user to the flashcard view page
     -->
-  <v-sheet class="pa-4" :class="responsiveClass" style="max-width: 800px">
+  <v-sheet class="pa-4" style="max-width: 800px">
     <!--
             class="pa-4" is a Vuetify utility class that applies padding of 4 units
             to all sides of the element.
@@ -14,9 +14,12 @@
     <v-row>
       <v-col cols="12">
         <v-text-field
+          id="search-input"
           v-model="search"
           label="Search"
           append-icon="mdi-magnify"
+          prepend-icon="mdi-arrow-left"
+          @click:prepend="$router.go(-1)"
           @click:append="search = ''"
           @input="debouncedSearchFlashcards"
           clearable
@@ -27,36 +30,22 @@
       <v-col
         cols="12"
         sm="6"
-        md="4"
-        lg="3"
         v-for="flashcard in appStore.flashcards"
         :key="flashcard.id"
       >
-        <v-card
-          @click="goToFlashcard(flashcard.id)"
-          class="mx-auto"
-          max-width="300"
-          variant="outlined"
-        >
-          <v-card-title>{{ flashcard.question }}</v-card-title>
-          <v-card-subtitle>
-            <!-- display tags -->
-            <v-chip v-for="tag in flashcard.tags" :key="tag" class="mr-2">
-              {{ tag }}
-            </v-chip>
-          </v-card-subtitle>
-        </v-card>
+        <!-- 不能通过这种方法传递Flashcard对象，会引起String contains an invalid character error
+            解决方法一是通过pinia store. 第二种方法是通过props传递。 
+        -->
+        <FlashcardPreview :flashcard="flashcard" />
       </v-col>
     </v-row>
   </v-sheet>
 </template>
 
 <script setup>
-import { ref } from "vue"
-import { useRouter } from "vue-router"
+import { onMounted, ref } from "vue"
 import { useAppStore } from "@/stores/app"
 
-const router = useRouter()
 const search = ref("")
 const appStore = useAppStore()
 
@@ -89,10 +78,9 @@ const searchFlashcards = async () => {
 
 const debouncedSearchFlashcards = debounce(searchFlashcards, 300)
 
-const goToFlashcard = (id) => {
-  const flashcard = appStore.flashcards.find(f => f.id === id)
-  appStore.selectFlashcard(flashcard)
-  console.log(router.getRoutes())
-  router.push({ name: "/flashcard/[id]", params: { id } })
-}
+onMounted(() => {
+  // focus on the search input when the page is loaded
+  document.querySelector("#search-input").focus()
+})
+
 </script>

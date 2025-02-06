@@ -85,6 +85,23 @@ router.get("/fulltext-search", async (req, res) => {
   }
 })
 
+// get recent flashcards by req.query.limit
+router.get("/recent", async (req, res) => {
+  logger.info(`${req.method} ${req.url}`)
+  let limit = req.query.limit
+  if (!limit) {
+    limit = 10
+  }
+  try {
+    const flashcards = await db.db_get_recent_flashcard(limit)
+    logger.info("%s => %o", req.url, flashcards)
+    res.send(flashcards)
+  } catch (error) {
+    logger.error(error)
+    res.status(500).json({ message: error.message })
+  }
+})
+
 // create a new flashcard
 router.post("/create", async (req, res) => {
   logger.info("%s %s %o", req.method, req.url, req.body)

@@ -1,5 +1,15 @@
-<script setup lang="ts">
-import Search from "@/components/Search.vue"
+<script setup>
+import FlashcardList from "@/components/FlashcardList.vue"
+import { useAppStore } from "@/stores/app"
+
+const appStore = useAppStore()
+fetch("http://localhost:3000/flashcard/recent")
+  .then((res) => res.json())
+  .then((data) => {
+    appStore.setFlashcards(data)
+  })
+  .catch((err) => console.error(err))
+
 </script>
 
 <template>
@@ -14,6 +24,19 @@ import Search from "@/components/Search.vue"
       Clicking on a flashcard will take the user to the flashcard view page
 
    -->
-  <h1>Hello Hongliang</h1>
-  <Search />
+  <v-sheet class="pa-4" border rounded elevation="6">
+    <div class="text-h4 mb-4">你好,</div>
+    <v-text-field
+      label="Search"
+      append-icon="mdi-magnify"
+      @click="$router.push('/search')"
+    >
+    </v-text-field>
+    <v-card variant="outlined" class="mt-4">
+      <v-card-title class="text-h6">最近的卡片</v-card-title>
+      <v-card-text>
+        <FlashcardList pinia-id="recentFlashcards" />
+      </v-card-text>
+    </v-card>
+  </v-sheet>
 </template>

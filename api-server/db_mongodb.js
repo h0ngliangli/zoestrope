@@ -14,11 +14,10 @@ logger.info("mongodb is connected")
 
 const database = mongoClient.db(env.mongodb.db)
 
-
 function _id_to_id(doc) {
   doc.id = doc._id.toString()
   delete doc._id
-  return doc  
+  return doc
 }
 
 // insert a new document and return the inserted id
@@ -102,6 +101,7 @@ export async function db_search_flashcard(kw, tag) {
 }
 
 export async function db_fulltext_search_flashcard(kw) {
+  logger.info("db_fulltext_search_flashcard(%s)", kw)
   const query = [
     {
       $search: {
@@ -118,9 +118,26 @@ export async function db_fulltext_search_flashcard(kw) {
       $limit: 10,
     },
   ]
+  logger.info("query is %o", query)
   let cursor = await database.collection("flashcard").aggregate(query)
-  const result = (await cursor.toArray())
+  const result = await cursor.toArray()
   result.forEach(_id_to_id)
+  logger.info("db_fulltext_search_flashcard => %o", result)
+  return result
+}
+
+export async function db_get_recent_flashcard(limit) {
+  logger.info("db_get_recent_flashcard(%s)", limit)
+  const query = {}
+  const sort = { _id: -1 }
+  const result = await database
+    .collection("flashcard")
+    .find(query)
+    .sort(sort)
+    .limit(limit)
+    .toArray()
+  result.forEach(_id_to_id)
+  logger.info("db_get_recent_flashcard => %o", result)
   return result
 }
 
