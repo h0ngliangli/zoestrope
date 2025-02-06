@@ -10,16 +10,16 @@
     variant="outlined"
     @click="goToFlashcard()"
   >
-    <slot:header>
-      <v-img
+    <template v-slot:title>
+        <v-img
         :src="flashcard.img_url"
         width="300"
         height="200"
         alt="Flashcard image"
         v-if="flashcard.img_url"
-      ></v-img>
-    </slot:header>
-    <v-card-title class="text-body-1">{{ flashcard.question }}</v-card-title>
+        ></v-img>
+        <div class="text-body-1">{{ flashcard.question }}</div>
+    </template>
     <v-card-subtitle>
       <v-chip v-for="tag in flashcard.tags" :key="tag" class="mr-2">
         {{ tag }}
