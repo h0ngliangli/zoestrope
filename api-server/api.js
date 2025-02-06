@@ -56,9 +56,14 @@ router.get("/search", async (req, res) => {
     res.status(400).json({ message: "kw or tag is required" })
     return
   }
-  const flashcards = await db.db_search_flashcard(kw, tag)
-  logger.info("%s => %o", req.url, flashcards)
-  res.send(flashcards)
+  try {
+    const flashcards = await db.db_search_flashcard(kw, tag)
+    logger.info("%s => %o", req.url, flashcards)
+    res.send(flashcards)
+  } catch (error) {
+    logger.error(error)
+    res.status(500).json({ message: error.message })
+  }
 })
 
 // create a new flashcard
@@ -192,6 +197,12 @@ router.post("/attach-img", upload_placer.single("img"), async (req, res) => {
   const res_body = { message: "img attached" }
   logger.info("%s => %o", req.url, res_body)
   res.send(res_body)
+})
+
+// Error-handling middleware
+router.use((err, req, res, next) => {
+  logger.error(err.stack)
+  res.status(500).json({ message: "Internal Server Error" })
 })
 
 export default router

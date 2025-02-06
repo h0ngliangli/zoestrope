@@ -40,6 +40,10 @@ GET http://localhost:3000/flashcard/search?kw=Beijing
 GET http://localhost:3000/flashcard/search?tag=capital
 
 ###
+# search with illegal char
+GET http://localhost:3000/flashcard/search?kw=ca\
+
+###
 # search with tag and kw
 GET http://localhost:3000/flashcard/search?kw=Paris&tag=capital
 ###

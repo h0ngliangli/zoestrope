@@ -49,10 +49,17 @@ const flashcards = ref([
   { id: 3, question: "What is the capital of Italy?", answer: "Rome" },
   { id: 4, question: "What is the capital of Germany?", answer: "Berlin" },
 ])
-const performSearch = async () => {
+const lastSearchTime = ref(new Date().getTime())
+const waitingTime = 500 // milliseconds
+const searchFlashcards = async () => {
   try {
+    // TODO: add a waiting time before making the request
+    const currentTime = new Date().getTime()
+    if (currentTime - lastSearchTime.value < waitingTime) {
+      return
+    }
     const res = await fetch(
-      "https://localhost:3001/flashcard/search?kw=" + search.value
+      "http://localhost:3000/flashcard/search?kw=" + search.value
     )
     const data = await res.json()
     flashcards.value = data
