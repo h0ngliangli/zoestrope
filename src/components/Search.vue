@@ -6,7 +6,7 @@
         card view with the question and answer of the flashcard displayed.
         Clicking on a flashcard will take the user to the flashcard view page
     -->
-  <v-sheet class="pa-4" :class="responsiveClass">
+  <v-sheet class="pa-4" :class="responsiveClass" style="max-width: 800px">
     <!--
             class="pa-4" is a Vuetify utility class that applies padding of 4 units
             to all sides of the element.
@@ -29,7 +29,7 @@
         sm="6"
         md="4"
         lg="3"
-        v-for="flashcard in flashcards"
+        v-for="flashcard in appStore.flashcards"
         :key="flashcard.id"
       >
         <v-card
@@ -52,16 +52,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue"
+import { ref } from "vue"
 import { useRouter } from "vue-router"
+import { useAppStore } from "@/stores/app"
+
 const router = useRouter()
 const search = ref("")
-const flashcards = ref([
-  { id: 1, question: "What is the capital of France?", answer: "Paris" },
-  { id: 2, question: "What is the capital of Spain?", answer: "Madrid" },
-  { id: 3, question: "What is the capital of Italy?", answer: "Rome" },
-  { id: 4, question: "What is the capital of Germany?", answer: "Berlin" },
-])
+const appStore = useAppStore()
 
 let debounceTimeout
 const debounce = (func, delay) => {
@@ -76,7 +73,7 @@ const debounce = (func, delay) => {
 const searchFlashcards = async () => {
   const kw = search.value
   if (!kw) {
-    flashcards.value = []
+    appStore.setFlashcards([])
     return
   }
   try {
@@ -84,7 +81,7 @@ const searchFlashcards = async () => {
       "http://localhost:3000/flashcard/fulltext-search?kw=" + search.value
     )
     const data = await res.json()
-    flashcards.value = data
+    appStore.setFlashcards(data)
   } catch (error) {
     console.error(error)
   }
@@ -93,7 +90,9 @@ const searchFlashcards = async () => {
 const debouncedSearchFlashcards = debounce(searchFlashcards, 300)
 
 const goToFlashcard = (id) => {
-  // console.log(router.getRoutes())
+  const flashcard = appStore.flashcards.find(f => f.id === id)
+  appStore.selectFlashcard(flashcard)
+  console.log(router.getRoutes())
   router.push({ name: "/flashcard/[id]", params: { id } })
 }
 </script>

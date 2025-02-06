@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import Search from '@/components/Search.vue';
-
+import Search from "@/components/Search.vue"
 </script>
 
 <template>
@@ -15,5 +14,6 @@ import Search from '@/components/Search.vue';
       Clicking on a flashcard will take the user to the flashcard view page
 
    -->
-   <Search />
+  <h1>Hello Hongliang</h1>
+  <Search />
 </template>
