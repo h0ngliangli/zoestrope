@@ -46,10 +46,7 @@ async function db_update_doc(col_name, doc) {
   delete doc.id
   const result = await database
     .collection(col_name)
-    .updateOne(
-      { _id: ObjectId.createFromHexString(id) },
-      { $set: doc }
-    )
+    .updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: doc })
   logger.info("db_update_doc => %o", result)
   return result.modifiedCount
 }
@@ -95,6 +92,27 @@ export async function db_search_flashcard(kw, tag) {
   return await db_search_doc("flashcard", query)
 }
 
+export async function db_fulltext_search_flashcard(kw) {
+  const query = [
+    {
+      $search: {
+        index: "default",
+        text: {
+          query: kw,
+          path: {
+            wildcard: "*",
+          },
+        },
+      },
+    },
+    {
+      $limit: 10,
+    },
+  ]
+  let cursor = await database.collection("flashcard").aggregate(query)
+  const result = await cursor.toArray()
+  return result
+}
 
 export async function db_close() {
   logger.info("db_close")

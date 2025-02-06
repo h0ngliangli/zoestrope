@@ -18,7 +18,7 @@
           label="Search"
           append-icon="mdi-magnify"
           @click:append="search = ''"
-          @input="searchFlashcards"
+          @input="debouncedSearchFlashcards"
           clearable
         ></v-text-field>
       </v-col>
@@ -49,17 +49,26 @@ const flashcards = ref([
   { id: 3, question: "What is the capital of Italy?", answer: "Rome" },
   { id: 4, question: "What is the capital of Germany?", answer: "Berlin" },
 ])
-const lastSearchTime = ref(new Date().getTime())
-const waitingTime = 500 // milliseconds
+
+let debounceTimeout
+const debounce = (func, delay) => {
+  return (...args) => {
+    clearTimeout(debounceTimeout)
+    debounceTimeout = setTimeout(() => {
+      func(...args)
+    }, delay)
+  }
+}
+
 const searchFlashcards = async () => {
+  const kw = search.value
+  if (!kw) {
+    flashcards.value = []
+    return
+  }
   try {
-    // TODO: add a waiting time before making the request
-    const currentTime = new Date().getTime()
-    if (currentTime - lastSearchTime.value < waitingTime) {
-      return
-    }
     const res = await fetch(
-      "http://localhost:3000/flashcard/search?kw=" + search.value
+      "http://localhost:3000/flashcard/fulltext-search?kw=" + search.value
     )
     const data = await res.json()
     flashcards.value = data
@@ -67,4 +76,7 @@ const searchFlashcards = async () => {
     console.error(error)
   }
 }
+
+const debouncedSearchFlashcards = debounce(searchFlashcards, 300)
+
 </script>

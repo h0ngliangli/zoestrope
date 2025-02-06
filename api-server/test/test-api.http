@@ -47,6 +47,9 @@ GET http://localhost:3000/flashcard/search?kw=ca\
 # search with tag and kw
 GET http://localhost:3000/flashcard/search?kw=Paris&tag=capital
 ###
+# full text search
+GET http://localhost:3000/flashcard/fulltext-search?kw=ch3ina
+###
 # upload file (see https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 POST http://localhost:3000/flashcard/attach-img
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW

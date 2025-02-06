@@ -66,6 +66,25 @@ router.get("/search", async (req, res) => {
   }
 })
 
+// full-text search flashcards by req.query.kw
+router.get("/fulltext-search", async (req, res) => {
+  logger.info(`${req.method} ${req.url}`)
+  const kw = req.query.kw
+  if (!kw) {
+    logger.warn("kw is required")
+    res.status(400).json({ message: "kw is required" })
+    return
+  }
+  try {
+    const flashcards = await db.db_fulltext_search_flashcard(kw)
+    logger.info("%s => %o", req.url, flashcards)
+    res.send(flashcards)
+  } catch (error) {
+    logger.error(error)
+    res.status(500).json({ message: error.message })
+  }
+})
+
 // create a new flashcard
 router.post("/create", async (req, res) => {
   logger.info("%s %s %o", req.method, req.url, req.body)

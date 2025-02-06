@@ -14,6 +14,7 @@ export default {
   db_delete_flashcard: db_impl.db_delete_flashcard,
   db_update_flashcard: db_impl.db_update_flashcard,
   db_search_flashcard: db_impl.db_search_flashcard,
+  db_fulltext_search_flashcard: db_impl.db_fulltext_search_flashcard,
   db_close: db_impl.db_close,
   db_upload: storage_impl.db_upload,
 }
