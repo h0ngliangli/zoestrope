@@ -100,7 +100,7 @@ async function submitImage(id) {
     return
   }
 
-  const imgBlob = await util.fetchBlob(img_url.value)
+  const imgBlob = await util.blobUrlToBlob(img_url.value)
   if (!imgBlob) {
     console.error("Failed to fetch image blob from ", img_url.value)
     return
