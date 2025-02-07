@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="pa-4" border rounded elevation="6">
     <div class="text-h4 mb-4">添加新卡片</div>
-    <v-form @submit="addFlashcard">
+    <v-form @submit.prevent="addFlashcard">
       <v-text-field v-model="question" label="问题" required></v-text-field>
       <v-text-field v-model="answer" label="答案" required></v-text-field>
       <v-text-field
@@ -40,6 +40,8 @@
 </template>
 
 <script setup>
+import { useAlertStore } from "@/stores/app"
+const alert = useAlertStore()
 const question = ref("")
 const answer = ref("")
 const tags = ref("")
@@ -69,9 +71,10 @@ const addFlashcard = async () => {
       answer.value = ""
       tags.value = ""
       note.value = ""
-      
+      alert.showAlert("success", "Flashcard added successfully")
     } else {
       console.error("Failed to add flashcard:", response.statusText)
+      alert.showAlert("error", "Failed to add flashcard")
     }
   } catch (error) {
     console.error("Failed to add flashcard:", error)
