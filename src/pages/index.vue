@@ -1,17 +1,3 @@
-<script setup>
-import FlashcardList from "@/components/FlashcardList.vue"
-import { useAppStore } from "@/stores/app"
-
-const appStore = useAppStore()
-fetch("http://localhost:3000/flashcard/recent")
-  .then((res) => res.json())
-  .then((data) => {
-    appStore.setRecentFlashcards(data)
-  })
-  .catch((err) => console.error(err))
-
-</script>
-
 <template>
   <!-- dashboard 
       includes a search bar, a list of recent flashcards,
@@ -25,15 +11,20 @@ fetch("http://localhost:3000/flashcard/recent")
 
    -->
   <v-sheet class="pa-4" rounded elevation="6">
-    <v-card class="mb-4" height="200" image="@/assets/header.jpg">
+    <v-card class="mb-4" height="200" @mouseover="mouseoverHeader" @mouseleave="mouseleaveHeader">
+      <template v-slot:image>
+        <v-img src="@/assets/header.jpg" cover
+        :style="{ filter: `blur(${blurStength}px)`, transition: 'filter 0.5s ease-in-out' }"
+        ></v-img>
+      </template>
       <v-card-title class="text-h6">美好的一天从练习开始</v-card-title>
       <v-card-actions>
         <v-btn
           variant="outlined"
-          class="ml-auto"
+          class="mx-auto"
           @click="$router.push('/flashcard/new')"
         >
-          开始练习
+          进入练习
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -52,3 +43,25 @@ fetch("http://localhost:3000/flashcard/recent")
     </v-card>
   </v-sheet>
 </template>
+
+
+<script setup>
+import FlashcardList from "@/components/FlashcardList.vue"
+import { useAppStore } from "@/stores/app"
+
+const blurStength = ref(5)
+const appStore = useAppStore()
+fetch("http://localhost:3000/flashcard/recent")
+  .then((res) => res.json())
+  .then((data) => {
+    appStore.setRecentFlashcards(data)
+  })
+  .catch((err) => console.error(err))
+
+const mouseoverHeader = () => {
+  blurStength.value = 0
+}
+const mouseleaveHeader = () => {
+  blurStength.value = 5
+}
+</script>
