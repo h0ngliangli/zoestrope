@@ -1,6 +1,6 @@
 <template>
   <v-sheet class="pa-4" border rounded elevation="6">
-    <div class="text-h4 mb-4">添加新卡片</div>
+    <div class="text-h4 mb-4">新卡片</div>
     <v-form @submit.prevent="addFlashcard">
       <v-text-field v-model="question" label="问题" required></v-text-field>
       <v-text-field v-model="answer" label="答案" required></v-text-field>
@@ -41,12 +41,15 @@
 
 <script setup>
 import { useAlertStore } from "@/stores/app"
+import * as util from "@/util"
+import { ref } from "vue"
 const alert = useAlertStore()
 const question = ref("")
 const answer = ref("")
 const tags = ref("")
 const note = ref("")
 const img_url = ref("")
+const id = ref("")
 const addFlashcard = async () => {
   console.log("Add flashcard")
   const flashcard = {
@@ -67,10 +70,16 @@ const addFlashcard = async () => {
     })
     if (response.ok) {
       console.log("Flashcard added successfully")
+      // 这么写是错的 
+      // const id = await response.json().id 应该：
+      const id = (await response.json()).id
+      console.log("Flashcard ID:", id)
+      // Clear the form fields
       question.value = ""
       answer.value = ""
       tags.value = ""
       note.value = ""
+      await submitImage(id)
       alert.showAlert("success", "Flashcard added successfully")
     } else {
       console.error("Failed to add flashcard:", response.statusText)
@@ -78,6 +87,36 @@ const addFlashcard = async () => {
     }
   } catch (error) {
     console.error("Failed to add flashcard:", error)
+  }
+}
+
+async function submitImage(id) {
+  if (!id) {
+    console.error("id is required to submit image")
+    return
+  }
+  if (!img_url.value) {
+    console.log("No image to submit")
+    return
+  }
+
+  const imgBlob = await util.fetchBlob(img_url.value)
+  if (!imgBlob) {
+    console.error("Failed to fetch image blob from ", img_url.value)
+    return
+  }
+  const formData = new FormData()
+  formData.append("img", imgBlob, "image.png")
+  formData.append("id", id)
+  const response = await fetch("http://localhost:3000/flashcard/attach-img", {
+    method: "POST",
+    body: formData,
+  })
+  if (response.ok) {
+    console.log("Image attached successfully")
+  } else {
+    console.error("Failed to attach image:", response.statusText)
+    alert.showAlert("error", "Failed to attach image")
   }
 }
 
