@@ -24,8 +24,20 @@ fetch("http://localhost:3000/flashcard/recent")
       Clicking on a flashcard will take the user to the flashcard view page
 
    -->
-  <v-sheet class="pa-4" border rounded elevation="6">
-    <div class="text-h4 mb-4">你好,</div>
+  <v-sheet class="pa-4" rounded elevation="6">
+    <v-card class="mb-4" height="200" image="@/assets/header.jpg">
+      <v-card-title class="text-h6">美好的一天从练习开始</v-card-title>
+      <v-card-actions>
+        <v-btn
+          variant="outlined"
+          class="ml-auto"
+          @click="$router.push('/flashcard/new')"
+        >
+          开始练习
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+    <div class="text-h4 mb-4">美好的一天从练习开始</div>
     <v-text-field
       label="Search"
       append-icon="mdi-magnify"
