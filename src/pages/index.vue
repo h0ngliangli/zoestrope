@@ -11,24 +11,38 @@
 
    -->
   <v-sheet class="pa-4" rounded elevation="6">
-    <v-card class="mb-4" height="200" @mouseover="mouseoverHeader" @mouseleave="mouseleaveHeader">
+    <v-card
+      class="mb-4"
+      height="200"
+      @mouseover="mouseoverHeader"
+      @mouseleave="mouseleaveHeader"
+      style="color: white"
+    >
       <template v-slot:image>
-        <v-img src="@/assets/header.jpg" cover
-        :style="{ filter: `blur(${blurStength}px)`, transition: 'filter 0.5s ease-in-out' }"
+        <v-img
+          src="@/assets/header.jpg"
+          cover
+          :style="{
+            filter: `blur(${blurStength}px)`,
+            transition: 'filter 0.5s ease-in-out',
+          }"
         ></v-img>
       </template>
-      <v-card-title class="text-h6">美好的一天从练习开始</v-card-title>
+      <v-card-title class="text-h6 d-flex justify-space-between">
+        <span> 美好的一天从练习开始 </span>
+        <v-icon @click="toggleTheme">mdi-brightness-6</v-icon>
+      </v-card-title>
       <v-card-actions>
         <v-btn
-          variant="outlined"
+          variant="elevated"
           class="mx-auto"
+          color="rgb(138, 43, 227)"
           @click="$router.push('/flashcard/exec')"
         >
           进入练习
         </v-btn>
       </v-card-actions>
     </v-card>
-    <div class="text-h4 mb-4">美好的一天从练习开始</div>
     <v-text-field
       label="Search"
       append-icon="mdi-magnify"
@@ -44,11 +58,12 @@
   </v-sheet>
 </template>
 
-
 <script setup>
 import FlashcardList from "@/components/FlashcardList.vue"
 import { useAppStore } from "@/stores/app"
+import { useTheme } from "vuetify"
 
+const theme = useTheme()
 const blurStength = ref(5)
 const appStore = useAppStore()
 fetch("http://localhost:3000/flashcard/recent")
@@ -63,5 +78,9 @@ const mouseoverHeader = () => {
 }
 const mouseleaveHeader = () => {
   blurStength.value = 5
+}
+
+const toggleTheme = () => {
+  theme.global.name.value = theme.global.current.value.dark ? "light" : "dark"
 }
 </script>
