@@ -1,6 +1,14 @@
 <template>
   <v-sheet border class="w-100 h-100">
-    <v-card title="练习">
+    <v-card>
+      <v-card-title class="d-flex justify-space-between">
+        <div class="text-h6">练习</div>
+        <div class="text-body-2">
+          总条目100 <br />
+          今日练习10
+          
+        </div>
+      </v-card-title>
       <v-card-text class="text-h6">
         <div>提问：{{ flashcard.question }}</div>
         <div class="d-flex flex-wrap ga-3">
