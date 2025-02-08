@@ -12,7 +12,7 @@
    -->
   <v-sheet class="pa-4" rounded elevation="6">
     <v-card
-      class="mb-4"
+      class="mb-4 position-relative"
       height="200"
       @mouseover="mouseoverHeader"
       @mouseleave="mouseleaveHeader"
@@ -42,6 +42,18 @@
           进入练习
         </v-btn>
       </v-card-actions>
+      <!-- 增加一个旋转的动画效果 
+          首先用一个div将其设定到指定位置 .corner
+          然后在div中添加一个v-img元素，
+          用animation控制旋转效果 .spin
+      -->
+      <div class="corner">
+        <v-img
+          src="/logo.svg"
+          class="spin"
+          width="300px"
+        ></v-img>
+      </div>
     </v-card>
     <v-text-field
       label="Search"
@@ -84,3 +96,24 @@ const toggleTheme = () => {
   theme.global.name.value = theme.global.current.value.dark ? "light" : "dark"
 }
 </script>
+
+<style scoped>
+.corner {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: translate(-50%, 50%);
+}
+
+.spin {
+  animation: spin 20s linear infinite;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
