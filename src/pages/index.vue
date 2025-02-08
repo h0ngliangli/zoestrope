@@ -22,7 +22,7 @@
         <v-btn
           variant="outlined"
           class="mx-auto"
-          @click="$router.push('/flashcard/new')"
+          @click="$router.push('/flashcard/exec')"
         >
           进入练习
         </v-btn>
