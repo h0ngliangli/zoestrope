@@ -2,6 +2,9 @@
   <v-sheet border class="w-100 h-100">
     <v-card>
       <v-card-title class="d-flex justify-space-between">
+        <v-btn @click="$router.go(-1)">
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
         <div class="text-h6">练习</div>
         <div class="text-body-2">
           总条目100 <br />
