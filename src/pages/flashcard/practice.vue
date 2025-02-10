@@ -2,13 +2,11 @@
   <v-sheet border class="w-100 h-100">
     <v-card>
       <v-card-title class="d-flex justify-space-between">
-        <v-btn @click="$router.go(-1)" icon="mdi-arrow-left">
-        </v-btn>
+        <v-btn @click="$router.go(-1)" icon="mdi-arrow-left"> </v-btn>
         <div class="text-h6">练习</div>
         <div class="text-body-2">
           总条目100 <br />
           今日练习10
-          
         </div>
       </v-card-title>
       <v-card-text class="text-h6">
@@ -54,6 +52,8 @@
 
 <script setup>
 import * as util from "@/util"
+import { useAlertStore } from "@/stores/app"
+const alert = useAlertStore()
 const flashcard = reactive({
   question: "",
   answer: "",
@@ -71,19 +71,23 @@ onMounted(() => {
   // fetch the first question
   nextQuestion()
 })
-const nextQuestion = () => {
-  // fetch the next question
+const nextQuestion = async () => {
   console.log("Next question")
-  const returned = util.nextFlashcard()
-  flashcard.question = returned.question
-  flashcard.answer = returned.answer
-  flashcard.tags = returned.tags
-  flashcard.note = returned.note
-  flashcard.img_url = returned.img_url
-  userAnswer.value = ""
-  userAnswerIcon.value = ""
-  showHint.value = false
-  eleUserAnswer.value.focus()
+  try {
+    const returned = await util.nextFlashcard()
+    console.log("Returned", returned)
+    flashcard.question = returned.question
+    flashcard.answer = returned.answer
+    flashcard.tags = returned.tags
+    flashcard.note = returned.note
+    flashcard.img_url = returned.img_url
+    userAnswer.value = ""
+    userAnswerIcon.value = ""
+    showHint.value = false
+    eleUserAnswer.value.focus()
+  } catch (error) {
+    alert.showAlert("error", "Failed to add flashcard")
+  }
 }
 const checkAnswer = () => {
   console.log("Check answer", userAnswer.value)

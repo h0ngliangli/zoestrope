@@ -152,8 +152,8 @@ export async function db_get_random_flashcard() {
     .limit(1)
     .toArray()
   result.forEach(_id_to_id)
-  logger.info("db_get_random_flashcard => %o", result)
-  return result
+  logger.info("db_get_random_flashcard => %o", result[0])
+  return result[0]
 }
 
 export async function db_close() {
