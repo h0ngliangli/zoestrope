@@ -43,17 +43,24 @@
         </v-btn>
       </v-card-actions>
       <!-- 增加一个旋转的动画效果 
-          首先用一个div将其设定到指定位置 .corner
+          首先用一个div将其设定到指定位置 .left-corner
           然后在div中添加一个v-img元素，
           用animation控制旋转效果 .spin
       -->
-      <div class="corner">
+      <div class="left-corner">
         <v-img
           src="/logo.svg"
           class="spin"
           width="300px"
         ></v-img>
       </div>
+        <v-card style="background-color: transparent;" class="right-corner">
+          <v-card-actions>
+            <v-btn icon @click="$router.push('/flashcard/add')" color="white">
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
     </v-card>
     <v-text-field
       label="Search"
@@ -98,11 +105,17 @@ const toggleTheme = () => {
 </script>
 
 <style scoped>
-.corner {
+.left-corner {
   position: absolute;
   bottom: 0;
   left: 0;
   transform: translate(-50%, 50%);
+}
+
+.right-corner {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 
 .spin {
