@@ -1,42 +1,47 @@
 <template>
-  <v-sheet class="pa-4" border rounded elevation="6">
-    <div class="text-h4 mb-4">新卡片</div>
-    <v-form @submit.prevent="addFlashcard">
-      <v-text-field v-model="question" label="问题" required></v-text-field>
-      <v-text-field v-model="answer" label="答案" required></v-text-field>
-      <v-text-field
-        v-model="tags"
-        label="标签"
-        placeholder="以空格分隔"
-      ></v-text-field>
-      <v-row>
-        <v-col>
-          <v-textarea v-model="note" label="笔记"> </v-textarea>
-        </v-col>
-        <v-col>
-          <v-sheet rounded class="d-flex flex-column align-center">
-            <v-img width="200" height="200" class="mx-auto" :src="img_url">
-              <template v-slot:placeholder>
-                <div
-                  class="border w-100 h-100 d-flex flex-column align-center justify-center"
-                >
-                  <div class="caption grey--text">粘贴图片在这里...</div>
-                  <v-btn icon="mdi-image-search" @click="attachImage"> </v-btn>
-                </div>
-              </template>
-            </v-img>
-            <v-btn
-              icon="mdi-close"
-              @click="() => (img_url = '')"
-              v-if="img_url"
-            >
-            </v-btn>
-          </v-sheet>
-        </v-col>
-      </v-row>
-      <v-btn type="submit" color="primary">添加</v-btn>
-    </v-form>
-  </v-sheet>
+  <v-card class="mx-auto" title="添加卡片">
+    <template v-slot:prepend>
+      <v-btn icon="mdi-arrow-left" @click="$router.go(-1)"> </v-btn>
+    </template>
+    <v-card-actions>
+      <v-form @submit.prevent="addFlashcard" class="w-100">
+        <v-text-field v-model="question" label="问题" required></v-text-field>
+        <v-text-field v-model="answer" label="答案" required></v-text-field>
+        <v-text-field
+          v-model="tags"
+          label="标签"
+          placeholder="以空格分隔"
+        ></v-text-field>
+        <v-row>
+          <v-col>
+            <v-textarea v-model="note" label="笔记"> </v-textarea>
+          </v-col>
+          <v-col>
+            <v-sheet rounded class="d-flex flex-column align-center">
+              <v-img width="200" height="200" class="mx-auto" :src="img_url">
+                <template v-slot:placeholder>
+                  <div
+                    class="border w-100 h-100 d-flex flex-column align-center justify-center"
+                  >
+                    <div class="caption grey--text">粘贴图片在这里...</div>
+                    <v-btn icon="mdi-image-search" @click="attachImage">
+                    </v-btn>
+                  </div>
+                </template>
+              </v-img>
+              <v-btn
+                icon="mdi-close"
+                @click="() => (img_url = '')"
+                v-if="img_url"
+              >
+              </v-btn>
+            </v-sheet>
+          </v-col>
+        </v-row>
+        <v-btn type="submit" color="primary">添加</v-btn>
+      </v-form>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script setup>
@@ -70,7 +75,7 @@ const addFlashcard = async () => {
     })
     if (response.ok) {
       console.log("Flashcard added successfully")
-      // 这么写是错的 
+      // 这么写是错的
       // const id = await response.json().id 应该：
       const id = (await response.json()).id
       console.log("Flashcard ID:", id)
