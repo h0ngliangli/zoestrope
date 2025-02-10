@@ -141,6 +141,21 @@ export async function db_get_recent_flashcard(limit) {
   return result
 }
 
+export async function db_get_random_flashcard() {
+  logger.info("db_get_random_flashcard")
+  const count = await database.collection("flashcard").countDocuments()
+  const skip = Math.floor(Math.random() * count)
+  const result = await database
+    .collection("flashcard")
+    .find()
+    .skip(skip)
+    .limit(1)
+    .toArray()
+  result.forEach(_id_to_id)
+  logger.info("db_get_random_flashcard => %o", result)
+  return result
+}
+
 export async function db_close() {
   logger.info("db_close")
   await mongoClient.close()

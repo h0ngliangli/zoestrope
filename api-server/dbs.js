@@ -18,4 +18,5 @@ export default {
   db_get_recent_flashcard: db_impl.db_get_recent_flashcard,
   db_close: db_impl.db_close,
   db_upload: storage_impl.db_upload,
+  db_get_random_flashcard: db_impl.db_get_random_flashcard,
 }

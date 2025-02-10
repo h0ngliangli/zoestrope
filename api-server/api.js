@@ -235,6 +235,26 @@ router.post("/attach-img", upload_placer.single("img"), async (req, res) => {
   res.send(res_body)
 })
 
+// get a random flashcard
+router.get("/random", async (req, res) => {
+  logger.info(`${req.method} ${req.url}`)
+  try {
+    const flashcard = await db.db_get_random_flashcard()
+    logger.info("%s => %o", req.url, flashcard)
+    res.send(flashcard)
+  } catch (error) {
+    logger.error(error)
+    res.status(500).json({ message: error.message })
+  }
+})
+
+// get a flashcard for practice
+router.get("/practice", async (req, res) => {
+  logger.info(`${req.method} ${req.url}`)
+  // redirect to /random
+  res.redirect("./random")
+})
+
 // Error-handling middleware
 router.use((err, req, res, next) => {
   logger.error(err.stack)
