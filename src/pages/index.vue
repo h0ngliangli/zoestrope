@@ -37,7 +37,7 @@
           variant="elevated"
           class="mx-auto"
           color="rgb(138, 43, 227)"
-          @click="$router.push('/flashcard/exec')"
+          @click="$router.push('/flashcard/practice')"
         >
           进入练习
         </v-btn>
