@@ -47,7 +47,7 @@
 <script setup>
 import { useAlertStore } from "@/stores/app"
 import * as util from "@/util"
-import { ref } from "vue"
+import { onMounted, ref } from "vue"
 const eleQuestion = ref(null)
 const alert = useAlertStore()
 const question = ref("")
@@ -56,6 +56,11 @@ const tags = ref("")
 const note = ref("")
 const img_url = ref("")
 const id = ref("")
+
+onMounted(() => {
+  eleQuestion.value.focus()
+})
+
 const addFlashcard = async () => {
   console.log("Add flashcard")
   const flashcard = {

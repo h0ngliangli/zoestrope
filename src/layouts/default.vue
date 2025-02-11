@@ -1,6 +1,14 @@
 <template>
   <v-main :class="responsiveClass" max-width="800">
-    <v-expand-transition>
+    <v-snackbar
+      v-model="alert.show"
+      :timeout="2000"
+      :color="alert.type">
+      <span class="mx-auto">
+        {{ alert.message }}
+      </span>
+    </v-snackbar>
+    <!-- <v-expand-transition>
       <v-alert
         v-if="alert.show"
         :type="alert.type"
@@ -9,7 +17,7 @@
         :text="alert.message"
       >
       </v-alert>
-    </v-expand-transition>
+    </v-expand-transition> -->
     <router-view />
   </v-main>
   <!-- <div style="position: fixed; bottom:0; width:100%; height: 40px" class="border ma-auto" >
@@ -24,6 +32,7 @@
 import { useAlertStore } from "@/stores/app"
 import { watch } from "vue"
 const alert = useAlertStore()
+const show = ref(true)
 
 const responsiveClass = computed(() => {
   return {
@@ -33,15 +42,4 @@ const responsiveClass = computed(() => {
     "pb-10": true, // 为footer留出空间
   }
 })
-
-watch(
-  () => alert.show,
-  (newValue, oldValue) => {
-    if (newValue) {
-      setTimeout(() => {
-        alert.hideAlert()
-      }, 5000)
-    }
-  }
-)
 </script>
