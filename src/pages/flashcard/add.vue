@@ -5,7 +5,7 @@
     </template>
     <v-card-actions>
       <v-form @submit.prevent="addFlashcard" class="w-100">
-        <v-text-field v-model="question" label="问题" required></v-text-field>
+        <v-text-field v-model="question" label="问题" required ref="eleQuestion"></v-text-field>
         <v-text-field v-model="answer" label="答案" required></v-text-field>
         <v-text-field
           v-model="tags"
@@ -48,6 +48,7 @@
 import { useAlertStore } from "@/stores/app"
 import * as util from "@/util"
 import { ref } from "vue"
+const eleQuestion = ref(null)
 const alert = useAlertStore()
 const question = ref("")
 const answer = ref("")
@@ -86,6 +87,7 @@ const addFlashcard = async () => {
       note.value = ""
       await submitImage(id)
       alert.showAlert("success", "Flashcard added successfully")
+      eleQuestion.value.focus()
     } else {
       console.error("Failed to add flashcard:", response.statusText)
       alert.showAlert("error", "Failed to add flashcard")
